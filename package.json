@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "clean": "rm -rf ./docs",
-    "build": "parcel build index.html 404.html --out-dir ./docs --public-path /pos-admin-lte/",
-    "dev": "parcel serve index.html --open",
+    "build": "parcel build index.html 404.html --out-dir ./docs --public-url /pos-admin-lte/",
+    "dev": "parcel serve manage-customers.html",
     "start": "npm run build && npm run dev"
   },
   "devDependencies": {
