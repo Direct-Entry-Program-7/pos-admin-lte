@@ -65,7 +65,7 @@ function initPagination(): void {
     showOrHidePagination();
     if (pageCount === 1) return;
 
-    let html = `<li class="page-item"><a class="page-link" href="javascript:void(0);">«</a></li>`;
+    let html = `<li class="page-item"><a class="page-link" href="#!">«</a></li>`;
 
     for (let i = 0; i < pageCount; i++) {
         html += `<li class="page-item ${selectedPage === (i+1)? 'active': ''}"><a class="page-link" href="javascript:void(0);">${i + 1}</a></li>`;
@@ -75,13 +75,15 @@ function initPagination(): void {
 
     $("ul.pagination").html(html);
 
+    // $(".page-item .page-link").on('click', (eventData)=> eventData.preventDefault());
+
     if (selectedPage === 1){
         $(".page-item:first-child").addClass('disabled');
     }else if (selectedPage === pageCount){
         $(".page-item:last-child").addClass('disabled');
     }    
 
-    $(".page-item:first-child").on('click', ()=> navigateToPage(selectedPage - 1));
+    $(".page-item:first-child").on('click', ()=>  navigateToPage(selectedPage - 1));
     $(".page-item:last-child").on('click', ()=> navigateToPage(selectedPage + 1));
 
     $(".page-item:not(.page-item:first-child, .page-item:last-child)").on('click', function(){
@@ -92,7 +94,7 @@ function initPagination(): void {
 
 function navigateToPage(page: number): void {
 
-    if (page < 1 || page > pageCount) throw 'Invalid page number';
+    if (page < 1 || page > pageCount) return;
 
     selectedPage = page;
     loadAllCustomers();
@@ -103,3 +105,41 @@ function showOrHidePagination(): void{
     
     pageCount > 1? $(".pagination").show(): $('.pagination').hide();
 }
+
+$("#btn-save").on('click', (eventData)=> {
+    eventData.preventDefault();
+
+    const txtId = $("#txt-id");
+    const txtName = $("#txt-name");
+    const txtAddress = $("#txt-address");
+
+    let id = (txtId.val() as string).trim();
+    let name = (txtName.val() as string).trim();
+    let address = (txtAddress.val() as string).trim();
+
+    let validated = true;
+
+    $('#txt-id, #txt-name, #txt-address').removeClass('is-invalid');
+
+    if (address.length < 3){
+        txtAddress.addClass('is-invalid');
+        txtAddress.trigger('select');
+        validated = false;
+    }    
+
+    if (!/^[A-Za-z ]+$/.test(name)){
+        txtName.addClass('is-invalid');
+        txtName.trigger('select');
+        validated = false;
+    }
+
+    if (!/^C\d{3}$/.test(id)){
+        txtId.addClass('is-invalid');
+        txtId.trigger('select');
+        validated = false;
+    }
+
+    if (!validated){
+        return;
+    }
+});

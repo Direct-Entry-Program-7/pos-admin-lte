@@ -11268,14 +11268,14 @@ function initPagination() {
   pageCount = Math.ceil(totalCustomers / PAGE_SIZE);
   showOrHidePagination();
   if (pageCount === 1) return;
-  var html = "<li class=\"page-item\"><a class=\"page-link\" href=\"javascript:void(0);\">\xAB</a></li>";
+  var html = "<li class=\"page-item\"><a class=\"page-link\" href=\"#!\">\xAB</a></li>";
 
   for (var i = 0; i < pageCount; i++) {
     html += "<li class=\"page-item " + (selectedPage === i + 1 ? 'active' : '') + "\"><a class=\"page-link\" href=\"javascript:void(0);\">" + (i + 1) + "</a></li>";
   }
 
   html += "<li class=\"page-item\"><a class=\"page-link\" href=\"javascript:void(0);\">\xBB</a></li>";
-  (0, jquery_1.default)("ul.pagination").html(html);
+  (0, jquery_1.default)("ul.pagination").html(html); // $(".page-item .page-link").on('click', (eventData)=> eventData.preventDefault());
 
   if (selectedPage === 1) {
     (0, jquery_1.default)(".page-item:first-child").addClass('disabled');
@@ -11295,7 +11295,7 @@ function initPagination() {
 }
 
 function navigateToPage(page) {
-  if (page < 1 || page > pageCount) throw 'Invalid page number';
+  if (page < 1 || page > pageCount) return;
   selectedPage = page;
   loadAllCustomers();
 }
@@ -11303,6 +11303,40 @@ function navigateToPage(page) {
 function showOrHidePagination() {
   pageCount > 1 ? (0, jquery_1.default)(".pagination").show() : (0, jquery_1.default)('.pagination').hide();
 }
+
+(0, jquery_1.default)("#btn-save").on('click', function (eventData) {
+  eventData.preventDefault();
+  var txtId = (0, jquery_1.default)("#txt-id");
+  var txtName = (0, jquery_1.default)("#txt-name");
+  var txtAddress = (0, jquery_1.default)("#txt-address");
+  var id = txtId.val().trim();
+  var name = txtName.val().trim();
+  var address = txtAddress.val().trim();
+  var validated = true;
+  (0, jquery_1.default)('#txt-id, #txt-name, #txt-address').removeClass('is-invalid');
+
+  if (address.length < 3) {
+    txtAddress.addClass('is-invalid');
+    txtAddress.trigger('select');
+    validated = false;
+  }
+
+  if (!/^[A-Za-z ]+$/.test(name)) {
+    txtName.addClass('is-invalid');
+    txtName.trigger('select');
+    validated = false;
+  }
+
+  if (!/^C\d{3}$/.test(id)) {
+    txtId.addClass('is-invalid');
+    txtId.trigger('select');
+    validated = false;
+  }
+
+  if (!validated) {
+    return;
+  }
+});
 },{"jquery":"node_modules/jquery/dist/jquery.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
