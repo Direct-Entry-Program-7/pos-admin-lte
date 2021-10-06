@@ -117,7 +117,26 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"node_modules/process/browser.js":[function(require,module,exports) {
+})({"ts/dto/customer.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Customer = void 0;
+
+var Customer = function () {
+  function Customer(id, name, address) {
+    this.id = id;
+    this.name = name;
+    this.address = address;
+  }
+
+  return Customer;
+}();
+
+exports.Customer = Customer;
+},{}],"node_modules/process/browser.js":[function(require,module,exports) {
 
 // shim for using process in browser
 var process = module.exports = {}; // cached from whatever global is present so that test runners that stub it
@@ -11225,6 +11244,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var customer_1 = require("./dto/customer");
+
 var jquery_1 = __importDefault(require("jquery")); // const BASE_API = 'https://266286ac-664e-4582-960c-3d513d0e57da.mock.pstmn.io';
 
 
@@ -11336,8 +11357,33 @@ function showOrHidePagination() {
   if (!validated) {
     return;
   }
+
+  saveCustomer(new customer_1.Customer(id, name, address));
 });
-},{"jquery":"node_modules/jquery/dist/jquery.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+
+function saveCustomer(customer) {
+  var http = new XMLHttpRequest();
+
+  http.onreadystatechange = function () {
+    if (http.readyState !== http.DONE) return;
+
+    if (http.status !== 201) {
+      alert("Failed to save the customer, retry");
+      return;
+    }
+
+    alert("Customer has been saved successfully");
+    navigateToPage(pageCount);
+    (0, jquery_1.default)("#txt-id, #txt-name, #txt-address").val('');
+    (0, jquery_1.default)("#txt-id").trigger('focus');
+  };
+
+  http.open('POST', CUSTOMERS_SERVICE_API, true); // 4. 
+
+  http.setRequestHeader('Content-Type', 'application/json');
+  http.send(JSON.stringify(customer));
+}
+},{"./dto/customer":"ts/dto/customer.ts","jquery":"node_modules/jquery/dist/jquery.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;

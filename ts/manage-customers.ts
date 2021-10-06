@@ -68,7 +68,7 @@ function initPagination(): void {
     let html = `<li class="page-item"><a class="page-link" href="#!">«</a></li>`;
 
     for (let i = 0; i < pageCount; i++) {
-        html += `<li class="page-item ${selectedPage === (i+1)? 'active': ''}"><a class="page-link" href="javascript:void(0);">${i + 1}</a></li>`;
+        html += `<li class="page-item ${selectedPage === (i + 1) ? 'active' : ''}"><a class="page-link" href="javascript:void(0);">${i + 1}</a></li>`;
     }
 
     html += `<li class="page-item"><a class="page-link" href="javascript:void(0);">»</a></li>`;
@@ -77,16 +77,16 @@ function initPagination(): void {
 
     // $(".page-item .page-link").on('click', (eventData)=> eventData.preventDefault());
 
-    if (selectedPage === 1){
+    if (selectedPage === 1) {
         $(".page-item:first-child").addClass('disabled');
-    }else if (selectedPage === pageCount){
+    } else if (selectedPage === pageCount) {
         $(".page-item:last-child").addClass('disabled');
-    }    
+    }
 
-    $(".page-item:first-child").on('click', ()=>  navigateToPage(selectedPage - 1));
-    $(".page-item:last-child").on('click', ()=> navigateToPage(selectedPage + 1));
+    $(".page-item:first-child").on('click', () => navigateToPage(selectedPage - 1));
+    $(".page-item:last-child").on('click', () => navigateToPage(selectedPage + 1));
 
-    $(".page-item:not(.page-item:first-child, .page-item:last-child)").on('click', function(){
+    $(".page-item:not(.page-item:first-child, .page-item:last-child)").on('click', function () {
         navigateToPage(+$(this).text());
     });
 
@@ -101,12 +101,12 @@ function navigateToPage(page: number): void {
 
 }
 
-function showOrHidePagination(): void{
-    
-    pageCount > 1? $(".pagination").show(): $('.pagination').hide();
+function showOrHidePagination(): void {
+
+    pageCount > 1 ? $(".pagination").show() : $('.pagination').hide();
 }
 
-$("#btn-save").on('click', (eventData)=> {
+$("#btn-save").on('click', (eventData) => {
     eventData.preventDefault();
 
     const txtId = $("#txt-id");
@@ -121,25 +121,56 @@ $("#btn-save").on('click', (eventData)=> {
 
     $('#txt-id, #txt-name, #txt-address').removeClass('is-invalid');
 
-    if (address.length < 3){
+    if (address.length < 3) {
         txtAddress.addClass('is-invalid');
         txtAddress.trigger('select');
         validated = false;
-    }    
+    }
 
-    if (!/^[A-Za-z ]+$/.test(name)){
+    if (!/^[A-Za-z ]+$/.test(name)) {
         txtName.addClass('is-invalid');
         txtName.trigger('select');
         validated = false;
     }
 
-    if (!/^C\d{3}$/.test(id)){
+    if (!/^C\d{3}$/.test(id)) {
         txtId.addClass('is-invalid');
         txtId.trigger('select');
         validated = false;
     }
 
-    if (!validated){
+    if (!validated) {
         return;
     }
+
+    saveCustomer(new Customer(id, name, address));
 });
+
+function saveCustomer(customer: Customer): void {
+
+    const http = new XMLHttpRequest();
+
+    http.onreadystatechange = () => {
+
+        if (http.readyState !== http.DONE) return;
+
+        if (http.status !== 201){
+            alert("Failed to save the customer, retry");
+            return;
+        }
+
+        alert("Customer has been saved successfully");
+        navigateToPage(pageCount);
+        $("#txt-id, #txt-name, #txt-address").val('');
+        $("#txt-id").trigger('focus');
+
+    };
+
+    http.open('POST', CUSTOMERS_SERVICE_API, true);
+
+    // 4. 
+    http.setRequestHeader('Content-Type', 'application/json');
+
+    http.send(JSON.stringify(customer));
+
+}
