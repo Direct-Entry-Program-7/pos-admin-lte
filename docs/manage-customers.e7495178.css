@@ -1,0 +1,24 @@
+.table tbody{
+    background-color: white;
+}
+
+.table td:first-child, th:first-child,
+.table td:last-child, th:last-child
+{
+    text-align: center;
+}
+
+.table tbody{
+    cursor: pointer;
+}
+
+.table td:last-child{
+    color: orangered;
+    font-size: 1.2rem;
+}
+
+.table td:last-child:hover{
+    color: red;
+}
+
+/*# sourceMappingURL=/manage-customers.e7495178.css.map */
